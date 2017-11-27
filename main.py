@@ -35,6 +35,7 @@ Below is psuedocode, from https://en.wikipedia.org/wiki/2-opt:
        }
 """
 import math
+import sys
 
 class City  :
     
@@ -146,14 +147,25 @@ fourCityProblem.append(c3)
 fourCityProblem.append(c2)
 fourCityProblem.append(c4)
     
-  
+print("INITIAL SET") 
+sys.stdout.write("ORDER: ")
+for c in fourCityProblem:
+    sys.stdout.write(str(c.id) + ' ')
+sys.stdout.write('\n')
+    
+print(calculateTotalDistance(fourCityProblem))
+sys.stdout.write('\n')
+
 s = findTSPSolution(fourCityProblem)
 
 print("SOLUTION")  
+sys.stdout.write("ORDER: ")
 for c in s:
-    print("id: " + str(c.id))
+    sys.stdout.write(str(c.id) + ' ')
+sys.stdout.write('\n')
     
 print(calculateTotalDistance(s))
+sys.stdout.write('\n')
 
 
 c1 = City(1, 0, 0)
@@ -175,13 +187,22 @@ fiveCityProblem.append(c2)
 fiveCityProblem.append(c4)
 fiveCityProblem.append(c3)
 
-
+print("INITIAL SET")  
+sys.stdout.write("ORDER: ")
+for c in fiveCityProblem:
+    sys.stdout.write(str(c.id) + ' ')
+sys.stdout.write('\n')
+    
+print(calculateTotalDistance(fiveCityProblem))
+sys.stdout.write('\n')
 
 s = findTSPSolution(fiveCityProblem)
 
 print("SOLUTION")  
+sys.stdout.write("ORDER: ")
 for c in s:
-    print("id: " + str(c.id))
+    sys.stdout.write(str(c.id) + ' ')
+sys.stdout.write('\n')
     
 print(calculateTotalDistance(s))
             
