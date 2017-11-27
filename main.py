@@ -51,7 +51,7 @@ def calculateDistance(city1, city2):
     x_distance = abs(city1.x - city2.x)
     y_distance = abs(city1.y - city2.y)
     
-    return math.sqrt(x_distance * x_distance + y_distance * y_distance)
+    return int(round(math.sqrt(x_distance * x_distance + y_distance * y_distance)))
    
 def fileImport(filename):
     with open (filename, "r") as myfile:
@@ -73,7 +73,7 @@ def fileImport(filename):
     
 def calculateTotalDistance(route):
 
-    tot = 0.0
+    tot = 0
     for idx in range(0, len(route)-1):
         tot += calculateDistance(route[idx], route[idx+1])
     tot += calculateDistance(route[len(route)-1], route[0])
@@ -196,23 +196,25 @@ c5 = City(5, 0, 1)
 # that needs to be fixed to get the optimal solution:
 #   {c1, c2, c3, c4}
 #   tot d = 4
-fiveCityProblem = []
-fiveCityProblem.append(c1)
-fiveCityProblem.append(c5)
-fiveCityProblem.append(c2)
-fiveCityProblem.append(c4)
-fiveCityProblem.append(c3)
+# fiveCityProblem = []
+# fiveCityProblem.append(c1)
+# fiveCityProblem.append(c5)
+# fiveCityProblem.append(c2)
+# fiveCityProblem.append(c4)
+# fiveCityProblem.append(c3)
+
+tspExample1 = fileImport("tsp_example_1.txt")
 
 print("INITIAL SET")  
 sys.stdout.write("ORDER: ")
-for c in fiveCityProblem:
+for c in tspExample1:
     sys.stdout.write(str(c.id) + ' ')
 sys.stdout.write('\n')
     
-print(calculateTotalDistance(fiveCityProblem))
+print(calculateTotalDistance(tspExample1))
 sys.stdout.write('\n')
 
-s = findTSPSolution(fiveCityProblem)
+s = findTSPSolution(tspExample1)
 
 print("SOLUTION")  
 sys.stdout.write("ORDER: ")
@@ -221,5 +223,3 @@ for c in s:
 sys.stdout.write('\n')
     
 print(calculateTotalDistance(s))
-            
-    
