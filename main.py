@@ -52,7 +52,23 @@ def calculateDistance(city1, city2):
     y_distance = abs(city1.y - city2.y)
     
     return math.sqrt(x_distance * x_distance + y_distance * y_distance)
-    
+   
+def fileImport(filename):
+    with open (filename, "r") as myfile:
+        #initializes variables
+        counter = 0
+        setCounter = 0
+
+        #loops through each line of file to gather data
+        Cities = []
+        for line in myfile:
+            numArray = []
+            lineNumbers = line.split()
+            for num in lineNumbers:
+                numArray.append(int(num))
+            Cities.append(City(numArray[0], numArray[1], numArray[2]))
+
+    return Cities
 
     
 def calculateTotalDistance(route):
