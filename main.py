@@ -66,7 +66,7 @@ def calculateDistance(city1, city2):
     x_distance = abs(city1.x - city2.x)
     y_distance = abs(city1.y - city2.y)
     
-    return math.sqrt(x_distance * x_distance + y_distance * y_distance)
+    return int(round(math.sqrt(x_distance * x_distance + y_distance * y_distance)))
    
 def fileImport(filename):
     with open (filename, "r") as myfile:
@@ -85,10 +85,17 @@ def fileImport(filename):
 
     return Cities
 
+# Writes output to file named after the original import file with .tour appended
+def fileExport(fileName, tour, distance):
+    with open (fileName + ".tour", "w") as myFile:
+        myFile.write(str(distance) + '\n')
+        for city in tour:
+            myFile.write("%d\n" % city.id)
+
     
 def calculateTotalDistance(route):
 
-    tot = 0.0
+    tot = 0
     for idx in range(0, len(route)-1):
         tot += calculateDistance(route[idx], route[idx+1])
     tot += calculateDistance(route[len(route)-1], route[0])
@@ -176,78 +183,32 @@ def findTSPSolution(s):
 
     return s  
 
+def printTour(s):
+    sys.stdout.write("ORDER: ")
+    for c in s:
+        sys.stdout.write(str(c.id) + ' ')
+    print("\nDistance: " + str(calculateTotalDistance(s)))
 
  
 
-# if len(sys.argv) < 2:
-	# print("Please enter the file name")
-	# exit()
+if len(sys.argv) < 2:
+	print("Please enter the file name")
+	exit()
 
     
-filename = ".\\tsp_test_cases\\test-input-4.txt"
+filename = sys.argv[1]
 s = fileImport(filename)
 
 start = time.time()
 
 s = nearestNeighbor(s)
 
-s = findTSPSolution(s)
-end = time.time()
-
-print("SOLUTION")  
-# for c in s:
-    # print("id: " + str(c.id))
-    
-print("DISTANCE: " + str(calculateTotalDistance(s)))
-print("TIME: " + str(end - start))
-
-
-s = fileImport(".\\tsp_test_cases\\test-input-5.txt")
-
-start = time.time()
-
-s = nearestNeighbor(s)
+print("\nINITIAL SOLUTION")  
+printTour(s)
 
 s = findTSPSolution(s)
+fileExport(sys.argv[1], s, calculateTotalDistance(s))
+
+print("\n2OPT SOLUTION")  
+printTour(s)
 end = time.time()
-
-print("SOLUTION")  
-# for c in s:
-    # print("id: " + str(c.id))
-    
-print("DISTANCE: " + str(calculateTotalDistance(s)))
-print("TIME: " + str(end - start))
-
-
-s = fileImport(".\\tsp_test_cases\\test-input-6.txt")
-
-start = time.time()
-
-s = nearestNeighbor(s)
-
-s = findTSPSolution(s)
-end = time.time()
-
-print("SOLUTION")  
-# for c in s:
-    # print("id: " + str(c.id))
-    
-print("DISTANCE: " + str(calculateTotalDistance(s)))
-print("TIME: " + str(end - start))
-
-
-s = fileImport(".\\tsp_test_cases\\test-input-7.txt")
-
-start = time.time()
-
-s = nearestNeighbor(s)
-
-s = findTSPSolution(s)
-end = time.time()
-
-print("SOLUTION")  
-# for c in s:
-    # print("id: " + str(c.id))
-    
-print("DISTANCE: " + str(calculateTotalDistance(s)))
-print("TIME: " + str(end - start))
