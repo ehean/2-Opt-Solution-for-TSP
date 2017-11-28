@@ -8,9 +8,22 @@ Course:     CS 325 Fall 2017
 Description:
 This is the final project for CS 325. It is the
 implementation of the 2-Opt algorithm, which finds
-an approximate solution to the TSP. 
+an approximate solution to the TSP. It does by first:
+    1. Constructing a decent solution
+    2. Improving that solution by making the locally
+       optimal choices.
+ 
+Below is the nearest neighbor psuedocode, used for the 
+construction heuristic, from https://en.wikipedia.org/wiki/Nearest_neighbour_algorithm:
 
-Below is psuedocode, from https://en.wikipedia.org/wiki/2-opt:
+    1. start on an arbitrary vertex as current vertex.
+    2. find out the shortest edge connecting current vertex and an unvisited vertex V.
+    3. set current vertex to V.
+    4. mark V as visited.
+    5. if all the vertices in domain are visited, then terminate.
+    6. Go to step 2.
+
+Below is the 2-Opt psuedocode, from https://en.wikipedia.org/wiki/2-opt:
 
     2optSwap(route, i, k) {
            1. take route[0] to route[i-1] and add them in order to new_route
@@ -36,6 +49,7 @@ Below is psuedocode, from https://en.wikipedia.org/wiki/2-opt:
 """
 import math
 import sys
+import time
 
 class City  :
     
@@ -43,6 +57,7 @@ class City  :
         self.id = id
         self.x = x
         self.y = y
+        self.visited = False
         
         
         
@@ -87,6 +102,44 @@ def calculateTotalDistance(route):
     
     return tot
         
+        
+# 1. start on an arbitrary vertex as current vertex.
+# 2. find out the shortest edge connecting current vertex and an unvisited vertex V.
+# 3. set current vertex to V.
+# 4. mark V as visited.
+# 5. if all the vertices in domain are visited, then terminate.
+# 6. Go to step 2
+        
+        
+def findClosestNeighbor(v, route):
+    
+    shortestEdgeLength = 99999999999
+    closestNeighbor = None
+    for c in route:
+        if c.id != v.id:
+            distance = calculateDistance(v, c)
+            if shortestEdgeLength > distance:
+                closestNeighbor = c
+                shortestEdgeLength = distance
+                
+    return closestNeighbor
+    
+# @profile
+def nearestNeighbor(route):
+    new_route = []
+    current_city = route.pop(0)
+    new_route.append(current_city)
+    while route != []:
+        next = findClosestNeighbor(current_city, route)
+        current_city = next
+        route.remove(next)
+        new_route.append(current_city)
+        
+    return new_route
+        
+    
+    
+    
 
 def twoOptSwap(route, i, k):
     new_route = []
@@ -105,9 +158,11 @@ def twoOptSwap(route, i, k):
     
     return new_route
 
+# @profile
 def findTSPSolution(s):       
     improvement = True
-
+    start = time.time()
+    end = start + 179
     while improvement: 
         improvement = False
         best_distance = calculateTotalDistance(s)
@@ -117,10 +172,12 @@ def findTSPSolution(s):
                 new_route = twoOptSwap(s, i, k)
                 new_distance = calculateTotalDistance(new_route)
                 if new_distance < best_distance:
-                    s = new_route[:]
+                    s = new_route
                     best_distance = new_distance
                     improvement = True
                     i = 1
+                if time.time() > end:
+                    return s
             else:
                 i += 1   
 
@@ -132,12 +189,19 @@ def printTour(s):
         sys.stdout.write(str(c.id) + ' ')
     print("\nDistance: " + str(calculateTotalDistance(s)))
 
+ 
 
 if len(sys.argv) < 2:
 	print("Please enter the file name")
 	exit()
 
-s = fileImport(sys.argv[1])
+    
+filename = sys.argv[1]
+s = fileImport(filename)
+
+start = time.time()
+
+s = nearestNeighbor(s)
 
 print("\nINITIAL SOLUTION")  
 printTour(s)
@@ -147,3 +211,4 @@ fileExport(sys.argv[1], s, calculateTotalDistance(s))
 
 print("\n2OPT SOLUTION")  
 printTour(s)
+end = time.time()
