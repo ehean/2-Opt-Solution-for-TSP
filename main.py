@@ -70,6 +70,13 @@ def fileImport(filename):
 
     return Cities
 
+# Writes output to file named after the original import file with .tour appended
+def fileExport(fileName, tour, distance):
+    with open (fileName + ".tour", "w") as myFile:
+        myFile.write(str(distance) + '\n')
+        for city in tour:
+            myFile.write("%d\n" % city.id)
+
     
 def calculateTotalDistance(route):
 
@@ -119,27 +126,24 @@ def findTSPSolution(s):
 
     return s  
 
+def printTour(s):
+    sys.stdout.write("ORDER: ")
+    for c in s:
+        sys.stdout.write(str(c.id) + ' ')
+    print("\nDistance: " + str(calculateTotalDistance(s)))
+
+
 if len(sys.argv) < 2:
 	print("Please enter the file name")
 	exit()
 
 s = fileImport(sys.argv[1])
 
-print("INITIAL SOLUTION")  
-sys.stdout.write("ORDER: ")
-for c in s:
-    sys.stdout.write(str(c.id) + ' ')
-sys.stdout.write('\n')
-    
-print("Distance: " + str(calculateTotalDistance(s)))
-sys.stdout.write('\n')
+print("\nINITIAL SOLUTION")  
+printTour(s)
 
 s = findTSPSolution(s)
+fileExport(sys.argv[1], s, calculateTotalDistance(s))
 
-print("2OPT SOLUTION")  
-sys.stdout.write("ORDER: ")
-for c in s:
-    sys.stdout.write(str(c.id) + ' ')
-sys.stdout.write('\n')
-    
-print("Distance: " + str(calculateTotalDistance(s)))
+print("\n2OPT SOLUTION")  
+printTour(s)
