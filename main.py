@@ -58,9 +58,7 @@ class City  :
         self.x = x
         self.y = y
         self.visited = False
-        
-        
-        
+          
 def calculateDistance(city1, city2):
 
     x_distance = abs(city1.x - city2.x)
@@ -86,8 +84,8 @@ def fileImport(filename):
     return Cities
 
 # Writes output to file named after the original import file with .tour appended
-def fileExport(fileName, tour, distance):
-    with open (fileName + ".tour", "w") as myFile:
+def fileExport(filename, tour, distance):
+    with open (filename + ".tour", "w") as myFile:
         myFile.write(str(distance) + '\n')
         for city in tour:
             myFile.write("%d\n" % city.id)
@@ -139,8 +137,6 @@ def nearestNeighbor(route):
         
     
     
-    
-
 def twoOptSwap(route, i, k):
     new_route = []
     
@@ -159,10 +155,10 @@ def twoOptSwap(route, i, k):
     return new_route
 
 # @profile
-def findTSPSolution(s):       
+def findTSPSolution(s, timeAvailable):       
     improvement = True
     start = time.time()
-    end = start + 179
+    end = start + timeAvailable
     while improvement: 
         improvement = False
         best_distance = calculateTotalDistance(s)
@@ -184,31 +180,41 @@ def findTSPSolution(s):
     return s  
 
 def printTour(s):
-    sys.stdout.write("ORDER: ")
-    for c in s:
-        sys.stdout.write(str(c.id) + ' ')
-    print("\nDistance: " + str(calculateTotalDistance(s)))
+    # sys.stdout.write("ORDER: ")
+    # for c in s:
+    #     sys.stdout.write(str(c.id) + ' ')
+    print("Distance: " + str(calculateTotalDistance(s)))
 
  
-
+start = time.time()
+totalTime = 179.0
 if len(sys.argv) < 2:
 	print("Please enter the file name")
 	exit()
 
-    
 filename = sys.argv[1]
 s = fileImport(filename)
-
-start = time.time()
-
-s = nearestNeighbor(s)
 
 print("\nINITIAL SOLUTION")  
 printTour(s)
 
-s = findTSPSolution(s)
-fileExport(sys.argv[1], s, calculateTotalDistance(s))
+greedy = nearestNeighbor(s)
+s = fileImport(filename)
 
-print("\n2OPT SOLUTION")  
+print("\nAFTER NEAREST NEIGHBOR PASS")  
+printTour(greedy)
+
+if calculateTotalDistance(greedy) < calculateTotalDistance(s):
+    s = greedy
+else:
+    print("Greedy solution discarded.")
+
+timeAvailable = totalTime - (time.time() - start)
+s = findTSPSolution(s, timeAvailable)
+fileExport(filename, s, calculateTotalDistance(s))
+
+print("\nAFTER 2OPT")  
 printTour(s)
 end = time.time()
+timeElapsed = end - start
+print("TIME: %f" % timeElapsed)
