@@ -1,7 +1,7 @@
 """
 Program:    2-Opt Approximation of TSP 
 Name:       Erik Heaney
-            Matthew Scott
+            Matthew McLean
             Kyle De Laurell
 Date:       11/26/2017
 Course:     CS 325 Fall 2017
@@ -187,12 +187,16 @@ def printTour(s):
 
  
 start = time.time()
-totalTime = 179.0
 if len(sys.argv) < 2:
-	print("Please enter the file name")
+	print("Please enter the file name.")
 	exit()
 
 filename = sys.argv[1]
+if len(sys.argv) == 3:
+    totalTime = float(sys.argv[2]) * 60 - 1
+else:
+    totalTime = 179.0
+
 s = fileImport(filename)
 
 print("\nINITIAL SOLUTION")  
@@ -217,4 +221,5 @@ print("\nAFTER 2OPT")
 printTour(s)
 end = time.time()
 timeElapsed = end - start
-print("TIME: %f" % timeElapsed)
+print("TIME ALLOCATED: %f" % (totalTime + 1))
+print("TIME USED: %f" % timeElapsed)
